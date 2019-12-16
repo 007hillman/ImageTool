@@ -15,6 +15,7 @@ initial_image = None
 image_size = None
 input_text = None
 text_position = None
+save_file_name = None
 
 def main():
 
@@ -90,6 +91,11 @@ def TextPosition(my_text, position, editabe_image):
   
   
 def SaveImage():
+  if not os.path.exists('edited images'):
+    os.makedirs('edited images')
+  print("enter file name with extension : \b")
+  save_file_name = input()
+  initial_image.save('edited images/' + save_file_name)
   print("Image is saved successfully")
 
   
