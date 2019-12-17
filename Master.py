@@ -26,7 +26,7 @@ def Initialize():
 
   # add long and short argument
   parser.add_argument('-i', '--image', action='store',help="This takes the image path",required=True)
-  parser.add_argument('-s','--size',action='store',help='enter the image size', default="medium")
+  parser.add_argument('-s','--size',action='store',help='enter the image size', default="instagram")
   parser.add_argument('-t','--text',help='enter the text, you can use this variable multiple times',dest='texts',action='append')
   parser.add_argument('-p','--position',action='append',help='enter position pattaining to the text', dest='positions')
   parser.add_argument('-sa','--save',help='enter filename with extension',action='store',required=True)
@@ -54,12 +54,12 @@ def ReadImageFile(init_image, im_size, file_path, txt,pos):
 def ResizeImage( opened_image, image_size,txt,pos):
   image = opened_image
   
-  if image_size == 'small':
-    image = opened_image.resize((128,72),resample=0,box=None)   
-  elif image_size == 'medium':
-    image = opened_image.resize((512,288),resample=0,box=None) 
-  elif image_size == 'large':
-    image = opened_image.resize((1024,576),resample=0,box=None) 
+  if image_size == 'instagram':
+    image = opened_image.resize((1080,1080),resample=0,box=None)   
+  elif image_size == 'twitter':
+    image = opened_image.resize((440,220),resample=0,box=None) 
+  elif image_size == 'facebook':
+    image = opened_image.resize((1200,630),resample=0,box=None) 
   TextPosition(txt,pos,image)
 
 def TextPosition(my_text, position, editabe_image):
@@ -69,7 +69,6 @@ def TextPosition(my_text, position, editabe_image):
   txt = Image.new('RGBA',base.size,(255,255,255,0))
   canvas = ImageDraw.Draw(txt)
   w,h = canvas.textsize(my_text)
-  color = "black"
   fill_color = "black"
   fnt = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", 18)
   
