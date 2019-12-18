@@ -1,8 +1,8 @@
 import os
 import PIL
-import easygui
 import math
 import argparse
+import tweepy
 
 from datetime import datetime
 from os import environ as env
@@ -18,6 +18,30 @@ image_size = None
 input_text = None
 text_position = None
 save_file_name = None
+edited_image_path = ''
+FLAG = True
+
+consumer_key = os.environ.get('CONSUMER_KEY')
+consumer_secret = os.environ.get('CONSUMER_SECRET')
+access_token = os.environ.get('ACCESS_TOKEN')
+access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
+
+#OAuthentication process
+def TwitterConnect() :
+  global edited_image_path
+  edited_image_path = 'edited images/' + save_file_name
+  if not consumer_key :
+    print('consumer key absent. Set the environmental variables')
+  else :
+    auth = OAuthHandler(consumer_key,consumer_secret)
+    auth.set_access_token(access_token,access_token_secret)
+    api = tweepy.API('auth')
+    user = api.me()
+    print('successfully conected to '+user.name + '\n enter a caption if any : ')
+    caption = ''+input()
+    api.update_with_media(edited_image_path , caption)
+  
+
 
 def Initialize():
   global text_position,image_size,save_file_name,input_text,file_path,positions,text_array
@@ -132,6 +156,10 @@ if __name__ == '__main__':
         print("make sure there is equal numbers of positions as texts")   
       if len(positions) == len(text_array) :       
         SaveImage()
+        print("Do you wish to post to twitter (y/n)?")
+        response = input()
+        if response == 'y' :
+          TwitterConnect()
     else :
       print("enter atleast one text and position...")
   else :

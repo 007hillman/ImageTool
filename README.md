@@ -31,4 +31,8 @@ The arguments can come in any order except for the text and its position which m
 this will run a test on the sample image in that folder
 - For help on the various options run the command
 	python3 Master.py -h 
-
+- if you have twitter authentication and token keys , store them in these environmental variables by entering these code in the terminal 
+	export CONSUMER_KEY="enter your twitter consumer key here"
+	export CONSUMER_SECRET="enter your twitter consumer secret here"
+	export ACCESS_TOKEN="enter your access token here"
+	export ACCESS_TOKEN_SECRET="enter your access token secret here"
