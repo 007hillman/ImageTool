@@ -3,10 +3,13 @@ import PIL
 import math
 import argparse
 import tweepy
+from tweepy.auth import OAuthHandler
 
 from datetime import datetime
 from os import environ as env
 from PIL import Image, ImageDraw, ImageFont
+# importing google_images_download module 
+from google_images_download import google_images_download 
 
 
 #global variables
@@ -20,6 +23,7 @@ text_position = None
 save_file_name = None
 edited_image_path = ''
 FLAG = True
+source = 'local'
 
 consumer_key = os.environ.get('CONSUMER_KEY')
 consumer_secret = os.environ.get('CONSUMER_SECRET')
@@ -41,7 +45,18 @@ def TwitterConnect() :
     caption = ''+input()
     api.update_with_media(edited_image_path , caption)
   
-
+def ImageDownload():
+  response = google_images_download.googleimagesdownload()   #class instantiation
+  print('enter search text : ')
+  search = input()
+  arguments = {"keywords":search,"limit":1,"print_urls":True}   #creating list of arguments
+  p = response.download(arguments)   #passing the arguments to the function
+  paths = str(p).split("['")
+  if len(paths) ==1 : 
+    return
+  paths = paths[1].split("']")
+  return paths[0]
+  #return paths
 
 def Initialize():
   global text_position,image_size,save_file_name,input_text,file_path,positions,text_array
@@ -49,7 +64,7 @@ def Initialize():
   parser = argparse.ArgumentParser()
 
   # add long and short argument
-  parser.add_argument('-i', '--image', action='store',help="This takes the image path",required=True)
+  parser.add_argument('-i', '--image', action='store',help="This takes the image path")
   parser.add_argument('-s','--size',action='store',help='enter the image size', default="instagram")
   parser.add_argument('-t','--text',help='enter the text, you can use this variable multiple times',dest='texts',action='append')
   parser.add_argument('-p','--position',action='append',help='enter position pattaining to the text', dest='positions')
@@ -57,6 +72,12 @@ def Initialize():
   args = parser.parse_args()
   if args.image :
     file_path = args.image
+  else :
+    print("You didn't enter the file path. Tool will now attempt to download from google")
+    file_path = ImageDownload()
+    if file_path==None :
+      print('No Image file found, try again..')
+      return
   if args.size :
     image_size = args.size 
   if args.save :
@@ -72,6 +93,8 @@ def main(txt,pos):
 def ReadImageFile(init_image, im_size, file_path, txt,pos):
   global image_size, initial_image
   if initial_image == None :
+    if file_path == None :
+      return
     initial_image = Image.open(file_path)
   ResizeImage(initial_image,image_size,txt,pos)
 
@@ -133,11 +156,15 @@ def SaveImage():
   if not os.path.exists('edited images'):
     os.makedirs('edited images')
   if os.path.exists('edited images/'+ save_file_name):
-    print("a file already exists with this name, will you lik to override it (y/n)")
+    print("A file is already saved with this name %s, will you like to override it (y/n)" %(save_file_name))
     option = input()
     if option == 'y':
       initial_image.save('edited images/' + save_file_name)
       print("Image is saved successfully")
+      print("Do you wish to post to twitter (y/n)?")
+      response = input()
+      if response == 'y' :
+        TwitterConnect()
     else :
       print("process aborted successfully...")
   else :
@@ -156,10 +183,7 @@ if __name__ == '__main__':
         print("make sure there is equal numbers of positions as texts")   
       if len(positions) == len(text_array) :       
         SaveImage()
-        print("Do you wish to post to twitter (y/n)?")
-        response = input()
-        if response == 'y' :
-          TwitterConnect()
+
     else :
       print("enter atleast one text and position...")
   else :

@@ -36,3 +36,9 @@ this will run a test on the sample image in that folder
 	export CONSUMER_SECRET="enter your twitter consumer secret here"
 	export ACCESS_TOKEN="enter your access token here"
 	export ACCESS_TOKEN_SECRET="enter your access token secret here"
+- install libraries tweepy and google image download with commands:
+	pip install google_images_download
+	pip install tweepy
+- If you don't enter an image path ( a value for -i) the tool is going to redirect you to a google search and demand you put in a search query.
+hint: to search for better quality images, add hd to your query
+
