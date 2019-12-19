@@ -39,7 +39,7 @@ def TwitterConnect() :
   else :
     auth = OAuthHandler(consumer_key,consumer_secret)
     auth.set_access_token(access_token,access_token_secret)
-    api = tweepy.API('auth')
+    api = tweepy.API(auth)
     user = api.me()
     print('successfully conected to '+user.name + '\n enter a caption if any : ')
     caption = ''+input()
@@ -170,6 +170,10 @@ def SaveImage():
   else :
     initial_image.save('edited images/' + save_file_name)
     print("Image is saved successfully...")
+    print("Do you wish to post to twitter (y/n)?")
+    response = input()
+    if response == 'y' :
+    	TwitterConnect()
 
   
 if __name__ == '__main__':
