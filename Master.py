@@ -4,12 +4,15 @@ import math
 import argparse
 import tweepy
 from tweepy.auth import OAuthHandler
+import facebook
+import json
 
 from datetime import datetime
 from os import environ as env
 from PIL import Image, ImageDraw, ImageFont
 # importing google_images_download module 
 from google_images_download import google_images_download 
+from instabot import Bot
 
 
 #global variables
@@ -22,6 +25,8 @@ input_text = None
 text_position = None
 save_file_name = None
 edited_image_path = ''
+social_medias = None
+capt = ''
 FLAG = True
 source = 'local'
 
@@ -29,10 +34,17 @@ consumer_key = os.environ.get('CONSUMER_KEY')
 consumer_secret = os.environ.get('CONSUMER_SECRET')
 access_token = os.environ.get('ACCESS_TOKEN')
 access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
+fb_access_token = os.environ.get('FACEBOOK_ACCESS_TOKEN')
 
-#OAuthentication process
+
+def InstagramConnect():
+  global capt, edited_image_path
+  bot = Bot()
+  bot.login(ask_for_code=True)
+  bot.upload_photo(edited_image_path, caption=capt)
+
 def TwitterConnect() :
-  global edited_image_path
+  global edited_image_path,consumer_key,consumer_secret,access_token,access_token_secret
   edited_image_path = 'edited images/' + save_file_name
   if not consumer_key :
     print('consumer key absent. Set the environmental variables')
@@ -44,6 +56,13 @@ def TwitterConnect() :
     print('successfully conected to '+user.name + '\n enter a caption if any : ')
     caption = ''+input()
     api.update_with_media(edited_image_path , caption)
+
+def FacebookConnect():
+  global capt,edited_image_path,fb_access_token
+  print(fb_access_token)
+  fb = facebook.GraphAPI(access_token=fb_access_token)
+  # Upload an image with a caption.
+  fb.put_photo(image=open(edited_image_path, 'rb'),message=capt)
   
 def ImageDownload():
   response = google_images_download.googleimagesdownload()   #class instantiation
@@ -59,7 +78,7 @@ def ImageDownload():
   #return paths
 
 def Initialize():
-  global text_position,image_size,save_file_name,input_text,file_path,positions,text_array
+  global text_position,image_size,save_file_name,input_text,file_path,positions,text_array,capt,social_medias
   #initiate the parser
   parser = argparse.ArgumentParser()
 
@@ -69,6 +88,8 @@ def Initialize():
   parser.add_argument('-t','--text',help='enter the text, you can use this variable multiple times',dest='texts',action='append')
   parser.add_argument('-p','--position',action='append',help='enter position pattaining to the text', dest='positions')
   parser.add_argument('-sa','--save',help='enter filename with extension',action='store',required=True)
+  parser.add_argument('-sm','--social',action='append',help='enter the name of the social media', dest='socials') 
+  parser.add_argument('-c','--caption',action='store',help='enter the image caption', default="")
   args = parser.parse_args()
   if args.image :
     file_path = args.image
@@ -86,6 +107,10 @@ def Initialize():
     text_array = args.texts
   if args.positions :
     positions = args.positions
+  if args.caption:
+    capt = args.caption
+  if args.socials: 
+    social_medias = args.socials
 
 def main(txt,pos):
   ReadImageFile(initial_image,image_size,file_path,txt,pos)  
@@ -153,6 +178,7 @@ def TextPosition(my_text, position, editabe_image):
   
   
 def SaveImage():
+  global social_medias ,edited_image_path
   if not os.path.exists('edited images'):
     os.makedirs('edited images')
   if os.path.exists('edited images/'+ save_file_name):
@@ -160,22 +186,10 @@ def SaveImage():
     option = input()
     if option == 'y':
       initial_image.save('edited images/' + save_file_name)
-      print("Image is saved successfully")
-      print("Do you wish to post to twitter (y/n)?")
-      response = input()
-      if response == 'y' :
-        TwitterConnect()
-    else :
-      print("process aborted successfully...")
+      edited_image_path = 'edited images/' + save_file_name
   else :
-    initial_image.save('edited images/' + save_file_name)
-    print("Image is saved successfully...")
-    print("Do you wish to post to twitter (y/n)?")
-    response = input()
-    if response == 'y' :
-    	TwitterConnect()
-
-  
+    initial_image.save('edited images/' + save_file_name)  
+    edited_image_path = 'edited images/' + save_file_name
 if __name__ == '__main__':
   Initialize()
   if text_array != None :
@@ -187,7 +201,15 @@ if __name__ == '__main__':
         print("make sure there is equal numbers of positions as texts")   
       if len(positions) == len(text_array) :       
         SaveImage()
-
+        print("Image is saved successfully...")
+        if len(social_medias) != 0 :
+          for i in range(0,len(social_medias)):
+            if social_medias[i]=='facebook':
+              FacebookConnect()
+            if social_medias[i]=='twitter' :
+              TwitterConnect()
+            if social_medias[i] == 'instagram':
+              InstagramConnect()
     else :
       print("enter atleast one text and position...")
   else :

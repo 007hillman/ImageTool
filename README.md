@@ -42,3 +42,12 @@ this will run a test on the sample image in that folder
 - If you don't enter an image path ( a value for -i) the tool is going to redirect you to a google search and demand you put in a search query.
 hint: to search for better quality images, add hd to your query
 
+- Install the facebook sdk with command 
+	pip install facebook-sdk==2.0.0
+	pip install python-instagram
+-you'll also need to add an access token to environmental variables using this command
+	export FACEBOOK_ACCESS_TOKEN="enter your USER token here"
+NB: enter your facebook user token and not access token
+test with this code
+	python3 Master.py -t "this text will appear top center" -i D9P8_6SX4AADXM4.jpeg -p top_center -sa image.jpg -t "this text will appear bottom center" -p bottom_center -sm facebook -c "hello facebook"
+
