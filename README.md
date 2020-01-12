@@ -24,7 +24,7 @@ RUNNING THE APP
 - to run the app enter the command
 	python3 Master.py -i img_path -sa save_name.jpg -t text -p position
 an example will be : 
-	python3 Master.py -t "this text will appear top center" -i D9P8_6SX4AADXM4.jpeg -p top_center -sa image.jpg -t "this text will appear bottom center" -p bottom_center
+	python3 Master.py -t "this text will appear top center" -p top_center -sa image.jpg -t "this text will appear bottom center" -p bottom_center
 
 NB: use the inverted commas only when the text is made up of more than one word with spaces. meaning there is no need when entering the image size which is just one word
 The arguments can come in any order except for the text and its position which must appear in order
@@ -50,5 +50,7 @@ NB: enter your facebook user token and not access token and also make sure your 
 test with this code
 
 -In order to post to social media sites, when running, add the variable -c "the caption of the post" then -sm facebook -sm instagram -sm twitter
-you can enter on social media or many as above
+you can enter one social media or many as above
+- Open the file user_info.json and enter your info. save it and launch the app
+
 

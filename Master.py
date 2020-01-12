@@ -6,6 +6,7 @@ import tweepy
 from tweepy.auth import OAuthHandler
 import facebook
 import json
+import crawler
 
 from datetime import datetime
 from os import environ as env
@@ -58,12 +59,19 @@ def TwitterConnect() :
     api.update_with_media(edited_image_path , caption)
 
 def FacebookConnect():
-  global capt,edited_image_path,fb_access_token
-  print(fb_access_token)
-  fb = facebook.GraphAPI(access_token=fb_access_token)
-  # Upload an image with a caption.
-  fb.put_photo(image=open(edited_image_path, 'rb'),message=capt)
-  
+  global capt,edited_image_path
+  with open('user_info.json') as json_file:
+    data = json.load(json_file)
+    crawl = crawler.Crawler(data['facebook_username'],data['facebook_password'],'https://web.facebook.com','/home/hillman/fiverr projects/add text to image/' + edited_image_path)
+    crawl.loginface()
+    crawl.post(capt)
+def LinkedlnConnect():
+  global capt,edited_image_path
+  with open('user_info.json') as json_file:
+    data = json.load(json_file)
+    crawl = crawler.Crawler(data['linkedin_username'],data['linkedin_password'],'https://web.linkedln.com','/home/hillman/fiverr projects/add text to image/' + edited_image_path)
+    crawl.loginlink()
+    crawl.postlink(capt)
 def ImageDownload():
   response = google_images_download.googleimagesdownload()   #class instantiation
   print('enter search text : ')
@@ -210,6 +218,8 @@ if __name__ == '__main__':
               TwitterConnect()
             if social_medias[i] == 'instagram':
               InstagramConnect()
+            if social_medias[i] == 'linkedin':
+              LinkedlnConnect()
     else :
       print("enter atleast one text and position...")
   else :
