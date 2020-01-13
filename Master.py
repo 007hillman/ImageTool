@@ -62,14 +62,18 @@ def FacebookConnect():
   global capt,edited_image_path
   with open('user_info.json') as json_file:
     data = json.load(json_file)
-    crawl = crawler.Crawler(data['facebook_username'],data['facebook_password'],'https://web.facebook.com','/home/hillman/fiverr projects/add text to image/' + edited_image_path)
+    crawl = crawler.Crawler(data['facebook_username'],data['facebook_password'],'https://web.facebook.com',FileLocation())
     crawl.loginface()
     crawl.post(capt)
+def FileLocation():
+  fileDir = os.path.dirname(os.path.abspath(__file__))
+  parentDir = os.path.dirname(fileDir)
+  return os.path.join(parentDir,edited_image_path)
 def LinkedlnConnect():
   global capt,edited_image_path
   with open('user_info.json') as json_file:
     data = json.load(json_file)
-    crawl = crawler.Crawler(data['linkedin_username'],data['linkedin_password'],'https://web.linkedln.com','/home/hillman/fiverr projects/add text to image/' + edited_image_path)
+    crawl = crawler.Crawler(data['linkedin_username'],data['linkedin_password'],'https://web.linkedln.com',FileLocation())
     crawl.loginlink()
     crawl.postlink(capt)
 def ImageDownload():
