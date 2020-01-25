@@ -68,7 +68,7 @@ def FacebookConnect():
 def FileLocation():
   fileDir = os.path.dirname(os.path.abspath(__file__))
   parentDir = os.path.dirname(fileDir)
-  return os.path.join(parentDir,edited_image_path)
+  return str(os.path.join(parentDir,edited_image_path))
 def LinkedlnConnect():
   global capt,edited_image_path
   with open('user_info.json') as json_file:
@@ -199,9 +199,13 @@ def SaveImage():
     if option == 'y':
       initial_image.save('edited images/' + save_file_name)
       edited_image_path = 'edited images/' + save_file_name
+      return True
+    else:
+      return False
   else :
     initial_image.save('edited images/' + save_file_name)  
     edited_image_path = 'edited images/' + save_file_name
+    return True
 if __name__ == '__main__':
   Initialize()
   if text_array != None :
@@ -212,18 +216,20 @@ if __name__ == '__main__':
       else:
         print("make sure there is equal numbers of positions as texts")   
       if len(positions) == len(text_array) :       
-        SaveImage()
-        print("Image is saved successfully...")
-        if len(social_medias) != 0 :
-          for i in range(0,len(social_medias)):
-            if social_medias[i]=='facebook':
-              FacebookConnect()
-            if social_medias[i]=='twitter' :
-              TwitterConnect()
-            if social_medias[i] == 'instagram':
-              InstagramConnect()
-            if social_medias[i] == 'linkedin':
-              LinkedlnConnect()
+        if SaveImage():
+          print("Image is saved successfully...")
+          if len(social_medias) != 0 :
+            for i in range(0,len(social_medias)):
+              if social_medias[i]=='facebook':
+                FacebookConnect()
+              if social_medias[i]=='twitter' :
+                TwitterConnect()
+              if social_medias[i] == 'instagram':
+                InstagramConnect()
+              if social_medias[i] == 'linkedin':
+                LinkedlnConnect()
+        else:
+          print("Terminating program ...")
     else :
       print("enter atleast one text and position...")
   else :

@@ -6,9 +6,9 @@ from selenium.webdriver.common.keys import Keys
 class Crawler :
   def __init__(self, username, password,sent_url, image_path):
     
-    chrome_options = webdriver.ChromeOptions()  
-    chrome_options.add_argument("--headless")
-    self.driver = webdriver.Chrome(chrome_options = chrome_options)
+    #chrome_options = webdriver.ChromeOptions()  
+    #chrome_options.add_argument("--headless")
+    self.driver = webdriver.Firefox()
     self.image = image_path
     self.username = username
     self.password = password
@@ -22,7 +22,7 @@ class Crawler :
     login_button = self.driver.find_element_by_id('loginbutton')
     login_button.submit()
     print("login successful, waiting for full page load. this might take a while (30s)...")
-    time.sleep(10)
+    self.driver.implicitly_wait(10)
 
   def post(self, text):
     #remove opaque screen 
@@ -33,8 +33,9 @@ class Crawler :
     give.send_keys(text)
     time.sleep(5)
     #ATTACH MEDIA
-    file = self.driver.find_element_by_xpath("//input[@data-testid='media-sprout']")
-    time.sleep(5)
+    file = self.driver.find_element_by_name("composer_photo[]")
+    # file = self.driver.find_element_by_xpath("//input[@data-testid='media-sprout']")
+    self.driver.implicitly_wait(10)
         #sending media
     file.send_keys(self.image)
         #wait while it uploads
