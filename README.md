@@ -53,4 +53,3 @@ test with this code
 you can enter one social media or many as above
 - Open the file user_info.json and enter your info. save it and launch the app
 
-

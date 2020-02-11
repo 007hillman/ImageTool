@@ -2,13 +2,16 @@ import time
 import configparser
 from selenium import webdriver 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 
 class Crawler :
   def __init__(self, username, password,sent_url, image_path):
     
+    options = Options()
+    options.add_argument("--headless")
     #chrome_options = webdriver.ChromeOptions()  
     #chrome_options.add_argument("--headless")
-    self.driver = webdriver.Firefox()
+    self.driver = webdriver.Firefox(firefox_options=options)
     self.image = image_path
     self.username = username
     self.password = password

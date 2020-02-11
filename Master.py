@@ -65,10 +65,10 @@ def FacebookConnect():
     crawl = crawler.Crawler(data['facebook_username'],data['facebook_password'],'https://web.facebook.com',FileLocation())
     crawl.loginface()
     crawl.post(capt)
+    
 def FileLocation():
   fileDir = os.path.dirname(os.path.abspath(__file__))
-  parentDir = os.path.dirname(fileDir)
-  return str(os.path.join(parentDir,edited_image_path))
+  return str(os.path.join(fileDir,edited_image_path))
 def LinkedlnConnect():
   global capt,edited_image_path
   with open('user_info.json') as json_file:
