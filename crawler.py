@@ -29,7 +29,7 @@ class Crawler :
 
   def post(self, text):
     #remove opaque screen 
-    self.driver.find_element_by_tag_name('body').click()
+    #self.driver.find_element_by_tag_name('body').click()
     #WALL
     give = self.driver.find_element_by_xpath("//*[@name='xhpc_message']")
     time.sleep(3)
